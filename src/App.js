@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [facts, setFacts] = useState();
+  const [randomNr, setRandomNr] = useState();
+
+  async function fetchWithAxios() {
+    try {
+      const response = await axios.get("https://catfact.ninja/facts");
+      setFacts(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+
+    console.log(facts);
+  }
+
+  useEffect(() => {
+    fetchWithAxios();
+  }, []);
+
+  if (facts) {
+    return (
+      <div>
+        {facts.map((item) => {
+          return (
+            <div className="fact" key={item.length}>
+              {item.fact}
+            </div>
+          );
+        })}
+      </div>
+    );
+  } else {
+    return <div className="App">...Loading</div>;
+  }
 }
 
 export default App;
